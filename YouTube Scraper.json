@@ -1,0 +1,582 @@
+{
+  "name": "YouTube Scraper",
+  "nodes": [
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        -1024,
+        0
+      ],
+      "id": "15323efb-2334-4ba1-a61b-19293b4cf419",
+      "name": "When clicking ‘Execute workflow’"
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "1Ys9ilNS6xWqya3zaj-b_j7SEi-q8nBPPlfWlZP8s_yA",
+          "mode": "list",
+          "cachedResultName": "Youtube Analysis",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1Ys9ilNS6xWqya3zaj-b_j7SEi-q8nBPPlfWlZP8s_yA/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Sayfa1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1Ys9ilNS6xWqya3zaj-b_j7SEi-q8nBPPlfWlZP8s_yA/edit#gid=0"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        -816,
+        0
+      ],
+      "id": "c103dd9e-b217-4efe-889c-5d21ce841699",
+      "name": "Get row(s) in sheet",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "eXPWnCqzEqF9dfZQ",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "url": "https://www.googleapis.com/youtube/v3/search",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "q",
+              "value": "={{ $json['Channel Username'] }}"
+            },
+            {
+              "name": "type",
+              "value": "channel"
+            },
+            {
+              "name": "mazResults",
+              "value": "1"
+            },
+            {
+              "name": "part",
+              "value": "snippet"
+            },
+            {
+              "name": "key",
+              "value": "Your-API-KEY"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        -608,
+        0
+      ],
+      "id": "c13da796-3108-459e-86d4-14c100534acb",
+      "name": "HTTP Request"
+    },
+    {
+      "parameters": {
+        "url": "https://www.googleapis.com/youtube/v3/channels",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "part",
+              "value": "snippet,statistics,contentDetails"
+            },
+            {
+              "name": "id",
+              "value": "={{ $json.items[0].id.channelId }}"
+            },
+            {
+              "name": "key",
+              "value": "AIzaSyCr-pCgIAi68en65M48Xx4dJc62We0Isjk"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        -400,
+        0
+      ],
+      "id": "b0c4450a-7200-485b-9882-f9147a8ee483",
+      "name": "HTTP Request1"
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "documentId": {
+          "__rl": true,
+          "value": "1Ys9ilNS6xWqya3zaj-b_j7SEi-q8nBPPlfWlZP8s_yA",
+          "mode": "list",
+          "cachedResultName": "Youtube Analysis",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1Ys9ilNS6xWqya3zaj-b_j7SEi-q8nBPPlfWlZP8s_yA/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Sayfa1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1Ys9ilNS6xWqya3zaj-b_j7SEi-q8nBPPlfWlZP8s_yA/edit#gid=0"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Channel Username": "={{ $json.items[0].snippet.customUrl }}",
+            "Channel Name": "={{ $json.items[0].snippet.title }}",
+            "Link": "=https://www.youtube.com/{{ $json.items[0].snippet.customUrl }}",
+            "Channel Id": "={{ $json.items[0].id }}",
+            "Video Count": "={{ $json.items[0].statistics.videoCount }}",
+            "Subscribers": "={{ $json.items[0].statistics.subscriberCount }}",
+            "Total Views": "={{ $json.items[0].statistics.viewCount }}",
+            "Average Views Per Video": "={{ Math.round($json.items[0].statistics.viewCount / $json.items[0].statistics.videoCount) }}",
+            "Views Per Sub": "={{ Math.round($json.items[0].statistics.viewCount / $json.items[0].statistics.subscriberCount ) }}",
+            "row_number": "={{ $('Get row(s) in sheet').item.json.row_number }}"
+          },
+          "matchingColumns": [
+            "row_number"
+          ],
+          "schema": [
+            {
+              "id": "Channel Username",
+              "displayName": "Channel Username",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Channel Name",
+              "displayName": "Channel Name",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Link",
+              "displayName": "Link",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Channel Id",
+              "displayName": "Channel Id",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Video Count",
+              "displayName": "Video Count",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Subscribers",
+              "displayName": "Subscribers",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Total Views",
+              "displayName": "Total Views",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Average Video Age",
+              "displayName": "Average Video Age",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Average Views Per Video",
+              "displayName": "Average Views Per Video",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Views Per Sub",
+              "displayName": "Views Per Sub",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "row_number",
+              "displayName": "row_number",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "number",
+              "canBeUsedToMatch": true,
+              "readOnly": true,
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        -192,
+        0
+      ],
+      "id": "3c3cd3fb-2345-4cae-884e-4dae9257b168",
+      "name": "Update row in sheet",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "eXPWnCqzEqF9dfZQ",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "url": "https://www.googleapis.com/youtube/v3/search",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "part",
+              "value": "snippet"
+            },
+            {
+              "name": "order",
+              "value": "viewCount"
+            },
+            {
+              "name": "channel_id",
+              "value": "={{ $json['Channel Id'] }}"
+            },
+            {
+              "name": "maxResults",
+              "value": "5"
+            },
+            {
+              "name": "key",
+              "value": "AIzaSyCr-pCgIAi68en65M48Xx4dJc62We0Isjk"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        -976,
+        256
+      ],
+      "id": "87a06472-f27d-4201-9080-a4492404a72f",
+      "name": "HTTP Request2"
+    },
+    {
+      "parameters": {
+        "url": "https://www.googleapis.com/youtube/v3/videos",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "part",
+              "value": "snippet,statistics"
+            },
+            {
+              "name": "id",
+              "value": "={{ $json.items[0].id.videoId }},{{ $json.items[1].id.videoId }},{{ $json.items[2].id.videoId }},{{ $json.items[3].id.videoId }}"
+            },
+            {
+              "name": "key",
+              "value": "AIzaSyCr-pCgIAi68en65M48Xx4dJc62We0Isjk"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        -768,
+        256
+      ],
+      "id": "19b3761f-f3bd-4c4e-970a-8f749ebf418e",
+      "name": "HTTP Request3"
+    },
+    {
+      "parameters": {
+        "fieldToSplitOut": "items",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.splitOut",
+      "typeVersion": 1,
+      "position": [
+        -560,
+        256
+      ],
+      "id": "145648f5-a74e-4eee-ab0e-9aa628681503",
+      "name": "Split Out"
+    },
+    {
+      "parameters": {
+        "operation": "append",
+        "documentId": {
+          "__rl": true,
+          "value": "1N-WtEzBUglQ8zWvBFOucNgffZQZTLGGgVLze0WxeULs",
+          "mode": "list",
+          "cachedResultName": "videos",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1N-WtEzBUglQ8zWvBFOucNgffZQZTLGGgVLze0WxeULs/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Sayfa1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1N-WtEzBUglQ8zWvBFOucNgffZQZTLGGgVLze0WxeULs/edit#gid=0"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Title": "={{ $json.snippet.title }}",
+            "Views": "={{ $json.statistics.viewCount }}",
+            "Likes": "={{ $json.statistics.likeCount }}",
+            "Comments": "={{ $json.statistics.commentCount }}",
+            "Outlier": "={{ ($json.statistics.viewCount / $('Update row in sheet').item.json['Average Views Per Video']).toFixed() }}",
+            "Channel": "={{ $json.snippet.channelTitle }}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "Title",
+              "displayName": "Title",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Views",
+              "displayName": "Views",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Likes",
+              "displayName": "Likes",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Comments",
+              "displayName": "Comments",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Outlier",
+              "displayName": "Outlier",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Channel",
+              "displayName": "Channel",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        -352,
+        256
+      ],
+      "id": "4eda2a5d-a3c9-4269-b825-716855c9f25f",
+      "name": "Append row in sheet",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "eXPWnCqzEqF9dfZQ",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "content": "## YouTube Scraper",
+        "height": 80,
+        "width": 224,
+        "color": 5
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        -656,
+        -128
+      ],
+      "typeVersion": 1,
+      "id": "c03e093c-0c1e-4877-9d4e-5df0127bf252",
+      "name": "Sticky Note"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "When clicking ‘Execute workflow’": {
+      "main": [
+        [
+          {
+            "node": "Get row(s) in sheet",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get row(s) in sheet": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP Request": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP Request1": {
+      "main": [
+        [
+          {
+            "node": "Update row in sheet",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Update row in sheet": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP Request2": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request3",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP Request3": {
+      "main": [
+        [
+          {
+            "node": "Split Out",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Split Out": {
+      "main": [
+        [
+          {
+            "node": "Append row in sheet",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "9eeb469e-06fb-46f1-8a62-ee4899a74751",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "d705a9ce0fa14ee5ebe4653e2e7ed6df64537ba0abeb31024a2a1aede17ce683"
+  },
+  "id": "giVKWCB1m0HDlTwP",
+  "tags": []
+}
