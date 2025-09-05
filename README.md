@@ -144,43 +144,7 @@
 **TR:** Artık N8N ile YouTube verilerini ücretsiz toplayabilir ve analiz edebilirsiniz.  
 **EN:** Now you can use N8N to scrape YouTube data for free and analyze it.  
 
----
 
-## 📢 Sosyal Medya Paylaşımları / Social Media Posts  
-
-### 🎥 YouTube Açıklaması / YouTube Description  
-
-**TR:**  
-🚀 N8N kullanarak YouTube’dan ücretsiz veri çekmeyi öğren!  
-Bu videoda, **API Key alma**, **workflow kurma** ve **verileri Google Sheets’e aktarma** adımlarını göreceksin.  
-
-**EN:**  
-🚀 Learn how to scrape YouTube data for free using N8N!  
-This video covers how to **get API key**, **build a workflow**, and **export data to Google Sheets**.  
-
----
-
-### 💼 LinkedIn Paylaşımı / LinkedIn Post  
-
-**TR:**  
-📊 YouTube verilerini ücretsiz analiz etmek mümkün!  
-N8N ile kanalları keşfedin, istatistikleri alın ve Google Sheets üzerinde analiz edin.  
-
-**EN:**  
-📊 Yes, you can analyze YouTube data for free!  
-With N8N, explore channels, fetch stats, and analyze them in Google Sheets.  
-
----
-
-### 📸 Instagram Post  
-
-**TR:**  
-🔥 YouTube Scraping artık çok kolay!  
-N8N ile ücretsiz analiz etmeyi öğren.  
-
-**EN:**  
-🔥 YouTube scraping made simple!  
-Learn to analyze for free with N8N.  
 
 ---
 
